@@ -1,5 +1,10 @@
 # DeployOwl builds
 bundle.tar.gz
+*.tar.gz
+*.zip
+
+# Deployment scripts (containing private tokens)
+deploy.sh
 
 # Local OS metadata
 .DS_Store
