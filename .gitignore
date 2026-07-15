@@ -1,0 +1,5 @@
+# DeployOwl builds
+bundle.tar.gz
+
+# Local OS metadata
+.DS_Store

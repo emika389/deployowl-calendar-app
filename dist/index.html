@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macro Calendar</title>
+  <meta name="description" content="A state-of-the-art serverless calendar application.">
+  <!-- Google Fonts Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1.4">
+</head>
+<body>
+
+  <div class="glow-sphere top-glow"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <div class="logo-badge">M</div>
+      <h1 class="logo-text">Macro Calendar</h1>
+    </div>
+    <div>
+      <div class="user-pill" id="user-pill">
+        <img src="" alt="Profile" class="profile-photo" id="profile-img">
+        <span id="user-display">user@domain.com</span>
+        <button class="btn btn-secondary" onclick="logout()" style="padding: 0.35rem 0.85rem; font-size: 0.75rem; border-radius: 99px;">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Auth Card -->
+    <section id="auth-section">
+      <h2 class="auth-title" id="auth-title">Log in to Macro Calendar</h2>
+      <p class="auth-subtitle" id="auth-subtitle">Secure login with your account credentials</p>
+
+      <form id="auth-form" onsubmit="handleAuth(event)">
+        <div class="form-group" id="name-group" style="display: none;">
+          <label class="form-label" for="auth-name">Full Name</label>
+          <input type="text" id="auth-name" class="form-input" placeholder="Alex Dev">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" class="form-input" required placeholder="name@domain.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="auth-password">Password</label>
+          <input type="password" id="auth-password" class="form-input" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 1rem; padding: 0.85rem;" id="auth-btn">Sign In</button>
+      </form>
+
+      <div class="auth-toggle">
+        <span id="toggle-text">Don't have an account? <span onclick="toggleAuthMode()">Sign up</span></span>
+      </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard-section">
+      <div class="dashboard-grid">
+        
+        <!-- Main Calendar Area -->
+        <article class="calendar-card">
+          <header class="calendar-header">
+            <h3 class="month-title" id="calendar-month-title">June 2026</h3>
+            <div class="month-nav">
+              <button class="nav-btn" onclick="navigateMonth(-1)" aria-label="Previous Month">&lsaquo;</button>
+              <button class="nav-btn" onclick="navigateMonth(1)" aria-label="Next Month">&rsaquo;</button>
+            </div>
+          </header>
+          
+          <div class="calendar-grid" id="calendar-grid">
+            <!-- Weekday Labels -->
+            <div class="weekday-label">Sun</div>
+            <div class="weekday-label">Mon</div>
+            <div class="weekday-label">Tue</div>
+            <div class="weekday-label">Wed</div>
+            <div class="weekday-label">Thu</div>
+            <div class="weekday-label">Fri</div>
+            <div class="weekday-label">Sat</div>
+            <!-- Grid cells generated dynamically -->
+          </div>
+        </article>
+
+        <!-- Sidebar controls -->
+        <aside class="sidebar">
+          
+          <!-- User Profile Upload Card -->
+          <div class="sidebar-card">
+            <h4 class="card-title">User Account</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.875rem;">
+              <p class="text-muted" style="font-size: 0.75rem; line-height: 1.4;">Choose a profile photo for your account</p>
+              <input type="file" id="profile-file-input" style="display: none;" onchange="uploadProfilePhoto(event)">
+              <button class="btn btn-secondary" onclick="document.getElementById('profile-file-input').click()">Choose Photo</button>
+            </div>
+          </div>
+
+          <!-- Go Premium -->
+          <div class="sidebar-card" id="premium-card">
+            <h4 class="card-title" style="color: var(--accent);">Upgrade Premium</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.875rem;">
+              <p class="text-muted" style="font-size: 0.75rem; line-height: 1.4;">Unlock shared calendars and pro features</p>
+              <button class="btn btn-accent" onclick="openPremiumModal()">Upgrade for $19.99</button>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Event Dialog -->
+  <div class="modal-overlay" id="event-modal-overlay">
+    <div class="modal">
+      <h3 class="modal-title" id="event-modal-title">Create Calendar Event</h3>
+      <form onsubmit="saveEvent(event)">
+        <input type="hidden" id="event-date">
+        <input type="hidden" id="event-id">
+        <div class="form-group">
+          <label class="form-label" for="event-title">Event Title</label>
+          <input type="text" id="event-title" class="form-input" required placeholder="Scrum standup">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="event-desc">Description</label>
+          <input type="text" id="event-desc" class="form-input" placeholder="Sprint checkin meeting">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="event-attachment-input">Attachment</label>
+          <input type="file" id="event-attachment-input" style="display: none;" onchange="uploadEventAttachment(event)">
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="event-attachment-url" class="form-input" style="flex: 1;" readonly placeholder="No file uploaded">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('event-attachment-input').click()">Upload</button>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="event-delete-btn" onclick="deleteEvent()" style="display: none; background: #dc2626; border-color: #dc2626; color: #fff; margin-right: auto;">Delete</button>
+          <button type="button" class="btn btn-secondary" onclick="closeEventModal()">Cancel</button>
+          <button type="submit" class="btn btn-accent">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Premium Upgrade Modal -->
+  <div class="modal-overlay" id="premium-modal-overlay">
+    <div class="modal">
+      <h3 class="modal-title">Unlock Premium Calendar</h3>
+      <div style="display: flex; flex-direction: column; gap: 1.25rem; font-size: 0.875rem;">
+        <p class="text-muted" style="line-height: 1.45;">Pro features include unlimited calendar events, team sharing, and custom alert emails.</p>
+        <div style="background: rgba(0,0,0,0.02); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-weight: 600; margin-bottom: 0.5rem;">Simulating Credit Card</div>
+          <div style="font-family: monospace; font-size: 0.85rem; color: var(--accent);">4242 •••• •••• 4242</div>
+        </div>
+        <button class="btn btn-accent" onclick="confirmPremiumPayment()">Simulate Payment</button>
+        <button class="btn btn-secondary" onclick="closePremiumModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <div class="toast-status" id="toast-status"></div>
+    <span id="toast-message">Event created successfully!</span>
+  </div>
+
+  <!-- App Logic -->
+  <script src="app.js?v=1.3"></script>
+</body>
+</html>
