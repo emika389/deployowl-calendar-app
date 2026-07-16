@@ -1,1 +1,46 @@
-[object Object]
+{
+  "name": "deployowl-calendar-app",
+  "version": "1.0.0",
+  "runtime": "nodejs20",
+  "type": "static",
+  "publicDir": "dist",
+  "build": {
+    "command": "echo 'No build step required — static assets served from /dist'",
+    "outputDir": "dist"
+  },
+  "routes": [
+    {
+      "pattern": "/assets/*",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "pattern": "/*",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    }
+  ],
+  "cdn": {
+    "enabled": true,
+    "edge": true,
+    "gzip": true,
+    "brotli": true
+  },
+  "security": {
+    "headers": {
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Permissions-Policy": "geolocation=(), microphone=(), camera=()"
+    }
+  },
+  "environment": {
+    "node": ">=20"
+  },
+  "healthcheck": {
+    "path": "/",
+    "timeoutMs": 5000
+  }
+}
