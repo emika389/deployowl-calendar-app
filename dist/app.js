@@ -126,7 +126,7 @@ function logout() {
   document.getElementById('dashboard-section').style.display = 'none';
   document.getElementById('user-pill').style.display = 'none';
   events = [];
-  showToast('Logged out successfully.');
+  showToast('Logged out successfully.', 'success');
 }
 
 async function fetchEvents() {
