@@ -4,7 +4,8 @@
   "description": "Macro Calendar — a serverless calendar app running on DeployWeb edge CDN",
   "type": "module",
   "scripts": {
-    "validate": "echo 'No build step required — static assets served from /dist'"
+    "validate": "echo 'No build step required — static assets served from /dist'",
+    "deploy": "bash deploy.sh"
   },
   "engines": {
     "node": ">=20"
