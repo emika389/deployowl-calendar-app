@@ -1,6 +1,6 @@
 {
   "name": "deployowl-calendar-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Best Calendar — a serverless calendar app running on DeployWeb edge CDN",
   "type": "module",
   "scripts": {
