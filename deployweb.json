@@ -1,6 +1,6 @@
 {
   "name": "deployowl-calendar-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "framework": "static+serverless",
   "runtime": "v8",
   "outputDir": "dist",
