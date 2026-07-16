@@ -5,7 +5,7 @@
   "type": "static",
   "publicDir": "dist",
   "build": {
-    "command": "echo 'No build step required — static assets served from /dist'",
+    "command": "mkdir -p dist/api && cp -r api/* dist/api/",
     "outputDir": "dist"
   },
   "routes": [
