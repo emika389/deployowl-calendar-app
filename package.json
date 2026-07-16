@@ -1,7 +1,7 @@
 {
   "name": "deployowl-calendar-app",
   "version": "1.0.0",
-  "description": "Macro Calendar — a serverless calendar app running on DeployWeb edge CDN",
+  "description": "Best Calendar — a serverless calendar app running on DeployWeb edge CDN",
   "type": "module",
   "scripts": {
     "validate": "echo 'No build step required — static assets served from /dist'",
