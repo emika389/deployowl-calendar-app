@@ -4,7 +4,8 @@
   "description": "Gift Calendar — a serverless calendar app running on DeployWeb edge CDN",
   "type": "module",
   "scripts": {
-    "validate": "echo 'No build step required — static assets served from /dist'",
+    "validate": "echo 'Validating...'",
+    "build": "mkdir -p dist/api && cp -r api/* dist/api/",
     "deploy": "bash deploy.sh"
   },
   "engines": {

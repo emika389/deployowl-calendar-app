@@ -5,7 +5,7 @@
   "runtime": "v8",
   "outputDir": "dist",
   "apiDir": "api",
-  "buildCommand": null,
+  "buildCommand": "npm run build",
   "routes": [
     {
       "pattern": "/assets/*",
