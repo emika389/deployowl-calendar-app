@@ -1,7 +1,7 @@
 {
   "name": "deployowl-calendar-app",
   "version": "1.0.2",
-  "description": "Gift Calendar — a serverless calendar app running on DeployWeb edge CDN",
+  "description": "DeployOwl Calendar App — a serverless calendar app running on DeployWeb edge CDN",
   "type": "module",
   "scripts": {
     "validate": "echo 'Validating...'",

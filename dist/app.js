@@ -49,7 +49,7 @@ function toggleAuthMode() {
     btn.textContent = 'Sign Up';
     toggle.innerHTML = 'Already have an account? <span onclick="toggleAuthMode()">Sign in</span>';
   } else {
-    title.textContent = 'Log in to Gift Calendar';
+    title.textContent = 'Log in to DeployOwl Calendar App';
     subtitle.textContent = 'Secure login with your account credentials';
     nameGroup.style.display = 'none';
     btn.textContent = 'Sign In';

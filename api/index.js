@@ -134,7 +134,7 @@ export default {
           await env.RESEND.emails.send({
             from: "onboarding@resend.dev",
             to: email,
-            subject: "Welcome to Gift Calendar!",
+            subject: "Welcome to DeployOwl Calendar App!",
             html: `<h3>Hello ${name || 'User'}!</h3><p>Your account has been successfully created. Welcome aboard!</p>`
           });
         } catch (resendErr) {
