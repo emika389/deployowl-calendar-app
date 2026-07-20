@@ -44,12 +44,66 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
+    // ─── PASSWORD HASHING UTILITIES (Web Crypto API) ───────────────────────────
+    const PBKDF2_ITERATIONS = 100000;
+    const SALT_LENGTH = 16;
+    const HASH_LENGTH = 32;
+
+    const bufferToHex = (buffer) => {
+      const bytes = new Uint8Array(buffer);
+      return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+    };
+
+    const hexToBuffer = (hex) => {
+      const bytes = new Uint8Array(hex.length / 2);
+      for (let i = 0; i < hex.length; i += 2) {
+        bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+      }
+      return bytes.buffer;
+    };
+
+    const deriveHash = async (password, saltBuffer) => {
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveBits"]
+      );
+      const derivedBits = await crypto.subtle.deriveBits(
+        {
+          name: "PBKDF2",
+          salt: saltBuffer,
+          iterations: PBKDF2_ITERATIONS,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        HASH_LENGTH * 8
+      );
+      return new Uint8Array(derivedBits);
+    };
+
+    const constantTimeCompare = (a, b) => {
+      if (a.length !== b.length) return false;
+      let result = 0;
+      for (let i = 0; i < a.length; i++) {
+        result |= a[i] ^ b[i];
+      }
+      return result === 0;
+    };
+
     try {
       // ─── SIGNUP ROUTE ────────────────────────────────────────────────────────
       if (path === "/api/auth" && url.searchParams.get("action") === "signup" && method === "POST") {
         const { email, password, name } = await request.json();
         if (!email || !password) {
           return Response.json({ error: "Missing email or password" }, { status: 400, headers: corsHeaders });
+        }
+
+        // Enforce minimum password length
+        if (password.length < 8) {
+          return Response.json({ error: "Password must be at least 8 characters" }, { status: 400, headers: corsHeaders });
         }
 
         // Sanitizing ID (OWL_NOSQL ID requirement)
@@ -61,8 +115,18 @@ export default {
           return Response.json({ error: "User already exists" }, { status: 409, headers: corsHeaders });
         }
 
-        // Insert new user
-        const userData = { email, password, name: name || "User", registeredAt: new Date().toISOString() };
+        // Generate salt and hash the password via PBKDF2
+        const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
+        const hash = await deriveHash(password, salt.buffer);
+
+        // Insert new user — store only the salted hash and salt, never the plaintext password
+        const userData = {
+          email,
+          passwordSalt: bufferToHex(salt.buffer),
+          passwordHash: bufferToHex(hash.buffer),
+          name: name || "User",
+          registeredAt: new Date().toISOString()
+        };
         await env.OWL_NOSQL.collection("users").insert(userId, userData);
 
         // Send confirmation email via Resend SDK
@@ -90,7 +154,16 @@ export default {
         const userId = email.replace(/[^a-zA-Z0-9_\-]/g, "_");
         const user = await env.OWL_NOSQL.collection("users").find(userId);
 
-        if (!user || user.password !== password) {
+        if (!user || !user.passwordHash || !user.passwordSalt) {
+          return Response.json({ error: "Invalid credentials" }, { status: 401, headers: corsHeaders });
+        }
+
+        // Derive hash from submitted password using stored salt and compare in constant time
+        const storedSalt = hexToBuffer(user.passwordSalt);
+        const submittedHash = await deriveHash(password, storedSalt);
+        const storedHash = new Uint8Array(hexToBuffer(user.passwordHash));
+
+        if (!constantTimeCompare(submittedHash, storedHash)) {
           return Response.json({ error: "Invalid credentials" }, { status: 401, headers: corsHeaders });
         }
 
