@@ -1,5 +1,4 @@
 export default {
-  const BROKEN_SYNTAX = ;
   async fetch(request, env) {
     // 1. OWL_GUARD bot & threat decision check
     try {
@@ -45,7 +44,7 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // ─── PASSWORD HASHING UTILITIES (Web Crypto API) ───────────────────────────
+    // âââ PASSWORD HASHING UTILITIES (Web Crypto API) âââââââââââââââââââââââââââ
     const PBKDF2_ITERATIONS = 100000;
     const SALT_LENGTH = 16;
     const HASH_LENGTH = 32;
@@ -95,7 +94,7 @@ export default {
     };
 
     try {
-      // ─── SIGNUP ROUTE ────────────────────────────────────────────────────────
+      // âââ SIGNUP ROUTE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
       if (path === "/api/auth" && url.searchParams.get("action") === "signup" && method === "POST") {
         const { email, password, name } = await request.json();
         if (!email || !password) {
@@ -120,7 +119,7 @@ export default {
         const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
         const hash = await deriveHash(password, salt.buffer);
 
-        // Insert new user — store only the salted hash and salt, never the plaintext password
+        // Insert new user â store only the salted hash and salt, never the plaintext password
         const userData = {
           email,
           passwordSalt: bufferToHex(salt.buffer),
@@ -145,7 +144,7 @@ export default {
         return Response.json({ success: true, message: "User registered successfully." }, { headers: corsHeaders });
       }
 
-      // ─── LOGIN ROUTE ─────────────────────────────────────────────────────────
+      // âââ LOGIN ROUTE âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
       if (path === "/api/auth" && url.searchParams.get("action") === "login" && method === "POST") {
         const { email, password } = await request.json();
         if (!email || !password) {
@@ -181,7 +180,7 @@ export default {
         }, { headers: corsHeaders });
       }
 
-      // ─── EVENTS GET ROUTE ────────────────────────────────────────────────────
+      // âââ EVENTS GET ROUTE ââââââââââââââââââââââââââââââââââââââââââââââââââââ
       if (path === "/api/events" && method === "GET") {
         const email = url.searchParams.get("email");
         if (!email) {
@@ -197,7 +196,7 @@ export default {
         }, { headers: corsHeaders });
       }
 
-      // ─── EVENTS SAVE ROUTE ───────────────────────────────────────────────────
+      // âââ EVENTS SAVE ROUTE âââââââââââââââââââââââââââââââââââââââââââââââââââ
       if (path === "/api/events" && url.searchParams.get("action") === "save" && method === "POST") {
         const { email, event } = await request.json();
         if (!email || !event) {
@@ -222,7 +221,7 @@ export default {
         return Response.json({ success: true, event, events: eventList }, { headers: corsHeaders });
       }
 
-      // ─── EVENTS DELETE ROUTE ─────────────────────────────────────────────────
+      // âââ EVENTS DELETE ROUTE âââââââââââââââââââââââââââââââââââââââââââââââââ
       if (path === "/api/events" && url.searchParams.get("action") === "delete" && method === "POST") {
         const { email, eventId } = await request.json();
         if (!email || !eventId) {
@@ -238,7 +237,7 @@ export default {
         return Response.json({ success: true, events: eventList }, { headers: corsHeaders });
       }
 
-      // ─── FILE UPLOAD ROUTE ───────────────────────────────────────────────────
+      // âââ FILE UPLOAD ROUTE âââââââââââââââââââââââââââââââââââââââââââââââââââ
       if (path === "/api/upload" && method === "POST") {
         const formData = await request.formData();
         const file = formData.get("file");
@@ -271,7 +270,7 @@ export default {
         }, { headers: corsHeaders });
       }
 
-      // ─── STRIPE PREMIUM CHECKOUT ROUTE ───────────────────────────────────────
+      // âââ STRIPE PREMIUM CHECKOUT ROUTE âââââââââââââââââââââââââââââââââââââââ
       if (path === "/api/premium" && method === "POST") {
         const { email } = await request.json();
         if (!email) {
