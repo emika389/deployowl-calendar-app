@@ -1,6 +1,7 @@
 name: deployowl-validation
 
 on:
+  push:
   repository_dispatch:
     types: [deployowl-validation]
   workflow_dispatch:

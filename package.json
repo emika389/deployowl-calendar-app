@@ -6,6 +6,7 @@
   "scripts": {
     "validate": "echo 'Validating...'",
     "build": "mkdir -p dist && cp -r api dist/",
+    "test": "node --check api/index.js",
     "deploy": "bash deploy.sh"
   },
   "engines": {

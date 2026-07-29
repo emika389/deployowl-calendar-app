@@ -1,4 +1,5 @@
 export default {
+  const BROKEN_SYNTAX = ;
   async fetch(request, env) {
     // 1. OWL_GUARD bot & threat decision check
     try {
